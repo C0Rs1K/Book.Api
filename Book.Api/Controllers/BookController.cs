@@ -39,7 +39,7 @@ namespace Book.Api.Controllers
             await bookService.DeleteBookAsync(bookId, cancellationToken);
         }
 
-        [HttpGet("my")]
+        [HttpGet("MyBooks")]
         public async Task<IEnumerable<BookResponseDto>> GetUserBorrowedBooksAsync(CancellationToken cancellationToken)
         {
             return await bookService.GetUserBorrowedBooksAsync(User.Identity.Name, cancellationToken);

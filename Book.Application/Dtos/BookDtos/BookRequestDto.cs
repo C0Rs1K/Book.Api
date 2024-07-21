@@ -10,4 +10,5 @@ public class BookRequestDto
     public DateTime TakeTime { get; set; }
     public DateTime ReturnTime { get; set; }
     public string BookOwner { get; set; }
+    public string ImagePath { get; set; }
 }

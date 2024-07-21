@@ -1,4 +1,5 @@
-﻿using Book.Application.Configuration;
+﻿using Book.Api.Middleware;
+using Book.Application.Configuration;
 using Book.Infrastructure.Configuration;
 using Book.Infrastructure.Database;
 using Microsoft.AspNetCore.Identity;
@@ -18,7 +19,7 @@ public static class ServiceConfiguration
         builder.Services
             .AddOpenApi(builder.Environment.ApplicationName)
             .AddEndpointsApiExplorer()
-            .AddControllers()
+            .AddControllers(opt => opt.Filters.Add<HttpGlobalExceptionFilter>())
             .AddJsonSerializer();
 
         builder.Services.ConfigureIdentity();

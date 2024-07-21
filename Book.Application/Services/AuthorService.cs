@@ -12,8 +12,7 @@ namespace Book.Application.Services;
 public class AuthorService(
     IAuthorRepository authorRepository,
     ICountryRepository countryRepository,
-    IMapper mapper, 
-    ILogger<AuthorService> logger)
+    IMapper mapper)
     : IAuthorService
 {
     public async Task<AuthorResponseDto> GetAuthorByIdAsync(int authorId, CancellationToken cancellationToken)
@@ -65,7 +64,6 @@ public class AuthorService(
 
         if (author == null)
         {
-            logger.LogError("Author with ID {AuthorId} not found.", authorId);
             throw new ResourceNotFoundException(nameof(author));
         }
 

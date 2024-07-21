@@ -9,11 +9,10 @@ public static class RequestPipelineConfiguration
     {
         if (app.Environment.IsDevelopment())
         {
-            app.UseOpenApi()
-                .UseDeveloperExceptionPage();
+            app.UseOpenApi();
         }
 
-        app.MapGroup("api/identity").MapIdentityApi<IdentityUser>();
+        app.MapGroup("api/identity").MapIdentityApi<IdentityUser<Guid>>();
 
         app.UseHttpsRedirection()
             .UseRouting()

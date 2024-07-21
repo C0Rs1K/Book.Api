@@ -16,8 +16,7 @@ public class BookService(
     IAuthorService authorService,
     IGenreRepository genreRepository,
     UserManager<IdentityUser<Guid>> userManager,
-    IMapper mapper,
-    ILogger<BookService> logger)
+    IMapper mapper)
     : IBookService
 {
     public async Task<BookResponseDto> GetBookByIdAsync(int bookId, CancellationToken cancellationToken)
@@ -43,7 +42,7 @@ public class BookService(
     {
         var book = mapper.Map<BookModel>(bookDto);
 
-        book.Author = await authorService.GetAuthorModelByIdAsync(bookDto.AuthorId, cancellationToken);
+        book.AuthorId = (await authorService.GetAuthorModelByIdAsync(bookDto.AuthorId, cancellationToken)).Id;
         book.BookOwner = await GetUserByUsernameAsync(bookDto.BookOwner);
         book.GenreId = await CreateGenreAsync(bookDto.Genre, cancellationToken);
 
@@ -57,7 +56,7 @@ public class BookService(
     {
         var book = await GetBookModelByIdAsync(bookId, cancellationToken);
 
-        book.Author = await authorService.GetAuthorModelByIdAsync(bookDto.AuthorId, cancellationToken);
+        book.AuthorId = (await authorService.GetAuthorModelByIdAsync(bookDto.AuthorId, cancellationToken)).Id;
         book.BookOwner = await GetUserByUsernameAsync(bookDto.BookOwner);
         book.GenreId = await CreateGenreAsync(bookDto.Genre, cancellationToken);
 
@@ -89,7 +88,6 @@ public class BookService(
 
         if (book == null)
         {
-            logger.LogError("Book with ID {BookId} not found.", bookId);
             throw new ResourceNotFoundException(nameof(book));
         }
 
@@ -102,7 +100,6 @@ public class BookService(
 
         if (user == null)
         {
-            logger.LogError("User with {Username} username not found", username);
             throw new ResourceNotFoundException(nameof(user));
         }
         return user;

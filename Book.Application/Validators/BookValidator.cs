@@ -40,7 +40,7 @@ public class BookValidator : AbstractValidator<BookRequestDto>
 
     private bool BeAValidTakeTime(DateTime takeTime)
     {
-        return takeTime >= DateTime.Now;
+        return takeTime >= DateTime.Now.AddMinutes(-5);
     }
 
     private bool BeAValidReturnTime(DateTime takeTime, DateTime returnTime)
