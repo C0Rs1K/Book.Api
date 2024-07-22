@@ -10,7 +10,7 @@ namespace Book.Api.Controllers
     public class BookController(IBookService bookService) : ControllerBase
     {
         [HttpGet]
-        public async Task<IEnumerable<BookResponseDto>> GetAllBooksAsync([FromQuery] BookSearchParameters searchParameters, CancellationToken cancellationToken)
+        public async Task<BookSearchDto> GetAllBooksAsync([FromQuery] BookSearchParameters searchParameters, CancellationToken cancellationToken)
         {
             return await bookService.GetAllBooksAsync(searchParameters, cancellationToken);
         }
@@ -40,9 +40,9 @@ namespace Book.Api.Controllers
         }
 
         [HttpGet("MyBooks")]
-        public async Task<IEnumerable<BookResponseDto>> GetUserBorrowedBooksAsync(CancellationToken cancellationToken)
+        public async Task<BookSearchDto> GetUserBorrowedBooksAsync([FromQuery] BookSearchParameters searchParameters, CancellationToken cancellationToken)
         {
-            return await bookService.GetUserBorrowedBooksAsync(User.Identity.Name, cancellationToken);
+            return await bookService.GetUserBorrowedBooksAsync(searchParameters, User.Identity.Name, cancellationToken);
         }
     }
 }

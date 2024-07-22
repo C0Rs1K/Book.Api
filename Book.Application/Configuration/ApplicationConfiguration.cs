@@ -52,6 +52,7 @@ public static class ApplicationConfiguration
     {
         services.AddScoped<IBookService, BookService>();
         services.AddScoped<IAuthorService, AuthorService>();
+        services.AddScoped<IGenreService, GenreService>();
         services.AddTransient<IImageService, ImageService>();
 
         return services;

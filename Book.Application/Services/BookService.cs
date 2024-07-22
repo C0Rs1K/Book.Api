@@ -8,13 +8,15 @@ using Book.Infrastructure.Shared.Exceptions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Threading;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace Book.Application.Services;
 
 public class BookService(
     IBookRepository bookRepository,
     IAuthorService authorService,
-    IGenreRepository genreRepository,
+    IGenreService genreService,
     UserManager<IdentityUser<Guid>> userManager,
     IMapper mapper)
     : IBookService
@@ -26,16 +28,9 @@ public class BookService(
         return mapper.Map<BookResponseDto>(book);
     }
 
-    public async Task<IEnumerable<BookResponseDto>> GetAllBooksAsync(BookSearchParameters searchParameters, CancellationToken cancellationToken)
+    public async Task<BookSearchDto> GetAllBooksAsync(BookSearchParameters searchParameters, CancellationToken cancellationToken)
     {
-        var books = bookRepository.GetRange()
-            .Where(b => searchParameters.Title == null || b.Name.Contains(searchParameters.Title))
-            .Where(b => searchParameters.Genre == null || b.Genre.Name == searchParameters.Genre)
-            .Where(b => searchParameters.AuthorId == null || b.AuthorId == searchParameters.AuthorId)
-            .Skip((searchParameters.PageNumber - 1) * searchParameters.PageSize)
-            .Take(searchParameters.PageSize);
-
-        return await mapper.ProjectTo<BookResponseDto>(books).ToListAsync(cancellationToken);
+        return await SearchByParams(searchParameters, cancellationToken);
     }
 
     public async Task<int> CreateBookAsync(BookRequestDto bookDto, CancellationToken cancellationToken)
@@ -44,7 +39,7 @@ public class BookService(
 
         book.AuthorId = (await authorService.GetAuthorModelByIdAsync(bookDto.AuthorId, cancellationToken)).Id;
         book.BookOwner = await GetUserByUsernameAsync(bookDto.BookOwner);
-        book.GenreId = await CreateGenreAsync(bookDto.Genre, cancellationToken);
+        book.GenreId = await genreService.CreateGenreAsync(bookDto.Genre, cancellationToken);
 
         bookRepository.Create(book);
         await bookRepository.SaveChangesAsync(cancellationToken);
@@ -58,7 +53,7 @@ public class BookService(
 
         book.AuthorId = (await authorService.GetAuthorModelByIdAsync(bookDto.AuthorId, cancellationToken)).Id;
         book.BookOwner = await GetUserByUsernameAsync(bookDto.BookOwner);
-        book.GenreId = await CreateGenreAsync(bookDto.Genre, cancellationToken);
+        book.GenreId = await genreService.CreateGenreAsync(bookDto.Genre, cancellationToken);
 
         mapper.Map(bookDto, book);
 
@@ -74,12 +69,33 @@ public class BookService(
         await bookRepository.SaveChangesAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<BookResponseDto>> GetUserBorrowedBooksAsync(string username, CancellationToken cancellationToken)
+    public async Task<BookSearchDto> GetUserBorrowedBooksAsync(BookSearchParameters searchParameters, string username, CancellationToken cancellationToken)
     {
-        var bookTakes = bookRepository.GetRange()
-            .Where(bt => bt.BookOwner != null && bt.BookOwner.UserName == username);
+        searchParameters.OwnerName = username;
+        return await SearchByParams(searchParameters, cancellationToken);
+    }
 
-        return await mapper.ProjectTo<BookResponseDto>(bookTakes).ToListAsync(cancellationToken);
+    private async Task<BookSearchDto> SearchByParams(BookSearchParameters searchParameters, CancellationToken cancellationToken)
+    {
+        var bookModels = bookRepository.GetRange()
+            .Where(b => searchParameters.Title == null || b.Name.Contains(searchParameters.Title))
+            .Where(b => searchParameters.Genre == null || b.Genre.Name == searchParameters.Genre)
+            .Where(b => searchParameters.AuthorId == null || b.AuthorId == searchParameters.AuthorId)
+            .Where(b => searchParameters.OwnerName == null || (b.BookOwner != null && b.BookOwner.UserName == searchParameters.OwnerName));
+
+        var totalPages = (bookModels.Count() / searchParameters.PageSize) + 1;
+
+        var books = bookModels
+            .Skip((searchParameters.PageNumber - 1) * searchParameters.PageSize)
+            .Take(searchParameters.PageSize);
+
+        var bookSearch = new BookSearchDto
+        {
+            Books = await mapper.ProjectTo<BookResponseDto>(books).ToListAsync(cancellationToken),
+            TotalPages = totalPages
+        };
+
+        return bookSearch;
     }
 
     private async Task<BookModel> GetBookModelByIdAsync(int bookId, CancellationToken cancellationToken)
@@ -103,24 +119,5 @@ public class BookService(
             throw new ResourceNotFoundException(nameof(user));
         }
         return user;
-    }
-
-    private async Task<int> CreateGenreAsync(string genreName, CancellationToken cancellationToken)
-    {
-        var genre = await genreRepository.GetRange()
-            .FirstOrDefaultAsync(x => x.Name == genreName, cancellationToken);
-
-        if (genre == null)
-        {
-            genre = new GenreModel
-            {
-                Name = genreName,
-            };
-            genreRepository.Create(genre);
-
-            await genreRepository.SaveChangesAsync(cancellationToken);
-        }
-
-        return genre.Id;
     }
 }

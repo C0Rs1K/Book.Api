@@ -18,6 +18,7 @@ public static class ServiceConfiguration
 
         builder.Services
             .AddOpenApi(builder.Environment.ApplicationName)
+            .AddCors()
             .AddEndpointsApiExplorer()
             .AddControllers(opt => opt.Filters.Add<HttpGlobalExceptionFilter>())
             .AddJsonSerializer();

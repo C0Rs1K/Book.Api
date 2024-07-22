@@ -12,13 +12,18 @@ public static class RequestPipelineConfiguration
             app.UseOpenApi();
         }
 
-        app.MapGroup("api/identity").MapIdentityApi<IdentityUser<Guid>>();
-
         app.UseHttpsRedirection()
             .UseRouting()
+            .UseCors(builder => builder
+                .AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader())
             .UseAuthentication()
             .UseAuthorization()
-            .UseEndpoints(endpoints => endpoints.MapControllers());
+            .UseEndpoints(endpoints => endpoints.MapControllers()); ;
+
+        app.MapGroup("api/identity")
+            .MapIdentityApi<IdentityUser<Guid>>();
 
         return app;
     }
