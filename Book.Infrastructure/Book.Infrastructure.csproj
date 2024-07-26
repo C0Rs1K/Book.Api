@@ -18,8 +18,4 @@
     <ProjectReference Include="..\Book.Domain\Book.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="UnitOfWork\Interfaces\" />
-  </ItemGroup>
-
 </Project>

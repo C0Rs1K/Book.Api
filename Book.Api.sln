@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Book.Api", "Book.Api\Book.Api.csproj", "{F78B201E-C833-4B34-ADBD-107FA4DA3927}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Book.Api", "Book.Api\Book.Api.csproj", "{F78B201E-C833-4B34-ADBD-107FA4DA3927}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Book.Application", "Book.Application\Book.Application.csproj", "{6FFEDB06-9D44-4BF5-8AA7-C5CF86F3FEE3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Book.Application", "Book.Application\Book.Application.csproj", "{6FFEDB06-9D44-4BF5-8AA7-C5CF86F3FEE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Book.Domain", "Book.Domain\Book.Domain.csproj", "{4093D256-0165-4D0B-B04B-1490A6BBCF8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Book.Domain", "Book.Domain\Book.Domain.csproj", "{4093D256-0165-4D0B-B04B-1490A6BBCF8D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Book.Infrastructure", "Book.Infrastructure\Book.Infrastructure.csproj", "{F10C7097-3596-418D-9915-43CCA1B03951}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Book.Infrastructure", "Book.Infrastructure\Book.Infrastructure.csproj", "{F10C7097-3596-418D-9915-43CCA1B03951}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

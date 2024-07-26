@@ -10,4 +10,12 @@ public class BadRequestException : Exception
         : base("Bad request: " + exceptionString, inner)
     {
     }
+
+    public static void ThrowIfNotNull(object? item)
+    {
+        if (item == null)
+        {
+            throw new BadRequestException("Item already exist" + item);
+        }
+    }
 }

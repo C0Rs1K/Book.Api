@@ -27,4 +27,15 @@
     <ProjectReference Include="..\Book.Infrastructure\Book.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Book\GetBookById\" />
+    <Folder Include="UseCases\Book\GetAllBooks\" />
+    <Folder Include="UseCases\Book\CreateBook\" />
+    <Folder Include="UseCases\Book\UpdateBook\" />
+    <Folder Include="UseCases\Book\DeleteBook\" />
+    <Folder Include="UseCases\Book\GetUserBorrowedBooks\" />
+    <Folder Include="UseCases\Genre\GetAllGenres\" />
+    <Folder Include="UseCases\Image\Новая папка\" />
+  </ItemGroup>
+
 </Project>

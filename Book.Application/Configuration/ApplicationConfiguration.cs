@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
 using AutoMapper;
 using Book.Application.Options;
-using Book.Application.Services;
-using Book.Application.Services.Interfaces;
 using Book.Application.Validators;
+using Book.UseCases.UseCases.Author.CreateAuthor;
 using FluentValidation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -50,10 +49,9 @@ public static class ApplicationConfiguration
 
     private static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IBookService, BookService>();
-        services.AddScoped<IAuthorService, AuthorService>();
-        services.AddScoped<IGenreService, GenreService>();
-        services.AddTransient<IImageService, ImageService>();
+        services.AddMediatR(opt => 
+            opt.RegisterServicesFromAssemblyContaining<CreateAuthorCommand>()
+        );
 
         return services;
     }

@@ -1,48 +1,74 @@
 ﻿using Book.Application.Dtos.BookDtos;
 using Book.Application.SearchParameters;
-using Book.Application.Services.Interfaces;
+using Book.Application.UseCases.Book.CreateBook;
+using Book.Application.UseCases.Book.DeleteBook;
+using Book.Application.UseCases.Book.GetAllBooks;
+using Book.Application.UseCases.Book.GetBookById;
+using Book.Application.UseCases.Book.GetUserBorrowedBooks;
+using Book.Application.UseCases.Book.UpdateBook;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Book.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BookController(IBookService bookService) : ControllerBase
+    public class BookController(ISender sender) : ControllerBase
     {
         [HttpGet]
-        public async Task<BookSearchDto> GetAllBooksAsync([FromQuery] BookSearchParameters searchParameters, CancellationToken cancellationToken)
+        [ProducesResponseType<BookSearchDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllBooksAsync([FromQuery] BookSearchParameters searchParameters, CancellationToken cancellationToken)
         {
-            return await bookService.GetAllBooksAsync(searchParameters, cancellationToken);
+            return Ok(await sender.Send(new GetAllBooksCommand(searchParameters), cancellationToken));
         }
 
         [HttpGet("{bookId}")]
-        public async Task<BookResponseDto> GetBookByIdAsync(int bookId, CancellationToken cancellationToken)
+        [ProducesResponseType<BookResponseDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetBookByIdAsync(int bookId, CancellationToken cancellationToken)
         {
-            return await bookService.GetBookByIdAsync(bookId, cancellationToken);
+            return Ok(await sender.Send(new GetBookByIdCommand(bookId), cancellationToken));
         }
 
         [HttpPost]
-        public async Task<int> CreateBookAsync([FromBody] BookRequestDto bookDto, CancellationToken cancellationToken)
+        [ProducesResponseType<int>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CreateBookAsync([FromBody] BookRequestDto bookDto, CancellationToken cancellationToken)
         {
-            return await bookService.CreateBookAsync(bookDto, cancellationToken);
+            return CreatedAtAction(nameof(CreateBookAsync), await sender.Send(new CreateBookCommand(bookDto), cancellationToken));
         }
 
         [HttpPut("{bookId}")]
-        public async Task UpdateBookAsync(int bookId, [FromBody] BookRequestDto book, CancellationToken cancellationToken)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateBookAsync(int bookId, [FromBody] BookRequestDto book, CancellationToken cancellationToken)
         {
-            await bookService.UpdateBookAsync(bookId, book, cancellationToken);
+            await sender.Send(new UpdateBookCommand(bookId, book), cancellationToken);
+            return NoContent();
         }
 
         [HttpDelete("{bookId}")]
-        public async Task DeleteBookAsync(int bookId, CancellationToken cancellationToken)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteBookAsync(int bookId, CancellationToken cancellationToken)
         {
-            await bookService.DeleteBookAsync(bookId, cancellationToken);
+            await sender.Send(new DeleteBookCommand(bookId), cancellationToken);
+            return NoContent();
         }
 
         [HttpGet("MyBooks")]
-        public async Task<BookSearchDto> GetUserBorrowedBooksAsync([FromQuery] BookSearchParameters searchParameters, CancellationToken cancellationToken)
+        [ProducesResponseType<BookSearchDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserBorrowedBooksAsync([FromQuery] BookSearchParameters searchParameters, CancellationToken cancellationToken)
         {
-            return await bookService.GetUserBorrowedBooksAsync(searchParameters, User.Identity.Name, cancellationToken);
+            return Ok(await sender.Send(new GetUserBorrowedBooksCommand(searchParameters, User.Identity.Name), cancellationToken));
         }
     }
 }

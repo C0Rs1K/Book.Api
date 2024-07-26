@@ -27,4 +27,10 @@
     <ProjectReference Include="..\Book.Infrastructure\Book.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\Book\Новая папка\" />
+    <Folder Include="UseCases\Genre\" />
+    <Folder Include="UseCases\Image\" />
+  </ItemGroup>
+
 </Project>

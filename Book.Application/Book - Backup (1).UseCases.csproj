@@ -12,7 +12,6 @@
     <PackageReference Include="AWSSDK.S3" Version="3.7.310.6" />
     <PackageReference Include="FluentValidation" Version="11.9.2" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
-    <PackageReference Include="MediatR" Version="12.4.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.OpenApi" Version="1.6.15" />
     <PackageReference Include="SharpGrip.FluentValidation.AutoValidation.Mvc" Version="1.4.0" />
@@ -25,6 +24,15 @@
   <ItemGroup>
     <ProjectReference Include="..\Book.Domain\Book.Domain.csproj" />
     <ProjectReference Include="..\Book.Infrastructure\Book.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="UseCases\Author\GetAuhtorById\" />
+    <Folder Include="UseCases\Author\GetAllAuthors\" />
+    <Folder Include="UseCases\Author\Новая папка\" />
+    <Folder Include="UseCases\Book\" />
+    <Folder Include="UseCases\Genre\" />
+    <Folder Include="UseCases\Image\" />
   </ItemGroup>
 
 </Project>
