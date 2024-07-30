@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Book.Domain", "Book.Domain\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Book.Infrastructure", "Book.Infrastructure\Book.Infrastructure.csproj", "{F10C7097-3596-418D-9915-43CCA1B03951}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Book.Test", "Book.Test\Book.Test.csproj", "{1BBB965F-ECBA-459E-99DC-693176CFAB61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F10C7097-3596-418D-9915-43CCA1B03951}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F10C7097-3596-418D-9915-43CCA1B03951}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F10C7097-3596-418D-9915-43CCA1B03951}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1BBB965F-ECBA-459E-99DC-693176CFAB61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BBB965F-ECBA-459E-99DC-693176CFAB61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BBB965F-ECBA-459E-99DC-693176CFAB61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BBB965F-ECBA-459E-99DC-693176CFAB61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
