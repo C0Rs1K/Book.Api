@@ -1,16 +1,20 @@
-﻿using Book.Application.Services.Interfaces;
+﻿using Book.Application.UseCases.Image.UploadImage;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Book.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImageController(IImageService imageService) : ControllerBase
+    public class ImageController(ISender sender) : ControllerBase
     {
         [HttpPost]
-        public async Task<string> UploadImageAsync([FromBody] string imageBase)
+        [ProducesResponseType<string>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UploadImageAsync([FromBody] string imageBase, CancellationToken cancellationToken)
         {
-            return await imageService.UploadImageAsync(imageBase);
+            return CreatedAtAction(nameof(UploadImageAsync), await sender.Send(new UploadImageCommand(imageBase), cancellationToken));
         }
     }
 }

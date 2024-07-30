@@ -1,42 +1,62 @@
 ﻿using Book.Application.Dtos.AuthorDtos;
-using Book.Application.Services.Interfaces;
-using Microsoft.AspNetCore.Http;
+using Book.UseCases.UseCases.Author.CreateAuthor;
+using Book.UseCases.UseCases.Author.DeleteAuthor;
+using Book.UseCases.UseCases.Author.GetAllAuthors;
+using Book.UseCases.UseCases.Author.GetAuthorById;
+using Book.UseCases.UseCases.Author.UpdateAuthor;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Book.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthorController(IAuthorService authorService) : ControllerBase
+    public class AuthorController(ISender sender) : ControllerBase
     {
         [HttpGet("{authorId}")]
-        public async Task<AuthorResponseDto> GetAuthorByIdAsync(int authorId, CancellationToken cancellationToken)
+        [ProducesResponseType<AuthorRequestDto>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAuthorByIdAsync(int authorId, CancellationToken cancellationToken)
         {
-            return await authorService.GetAuthorByIdAsync(authorId, cancellationToken);
+            return Ok(await sender.Send(new GetAuthorByIdCommand(authorId), cancellationToken));
         }
 
         [HttpGet]
-        public async Task<IEnumerable<AuthorResponseDto>> GetAllAuthorsAsync(CancellationToken cancellationToken)
+        [ProducesResponseType<IEnumerable<AuthorRequestDto>>(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAllAuthorsAsync(CancellationToken cancellationToken)
         {
-            return await authorService.GetAllAuthorsAsync(cancellationToken);
+            return Ok(await sender.Send(new GetAllAuthorsCommand(), cancellationToken));
         }
 
         [HttpPost]
-        public async Task<int> CreateAuthorAsync([FromBody] AuthorRequestDto createAuthorDto, CancellationToken cancellationToken)
+        [ProducesResponseType<int>(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateAuthorAsync([FromBody] AuthorRequestDto createAuthorDto, CancellationToken cancellationToken)
         {
-            return await authorService.CreateAuthorAsync(createAuthorDto, cancellationToken);
+            return CreatedAtAction(nameof(CreateAuthorAsync), await sender.Send(new CreateAuthorCommand(createAuthorDto), cancellationToken));
         }
 
         [HttpPut("{authorId}")]
-        public async Task UpdateAuthorAsync(int authorId, [FromBody] AuthorRequestDto updateAuthorDto, CancellationToken cancellationToken)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateAuthorAsync(int authorId, [FromBody] AuthorRequestDto updateAuthorDto, CancellationToken cancellationToken)
         {
-            await authorService.UpdateAuthorAsync(authorId, updateAuthorDto, cancellationToken);
+            await sender.Send(new UpdateAuthorCommand(authorId, updateAuthorDto), cancellationToken);
+            return NoContent();
         }
 
         [HttpDelete("{authorId}")]
-        public async Task DeleteAuthorAsync(int authorId, CancellationToken cancellationToken)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteAuthorAsync(int authorId, CancellationToken cancellationToken)
         {
-            await authorService.DeleteAuthorAsync(authorId, cancellationToken);
+            await sender.Send(new DeleteAuthorCommand(authorId), cancellationToken);
+            return NoContent();
         }
     }
 }

@@ -10,4 +10,12 @@ public class ResourceNotFoundException : Exception
         : base("Resource not found: " + resourceName, inner)
     {
     }
+
+    public static void ThrowIfNull(object? item)
+    {
+        if (item == null)
+        {
+            throw new ResourceNotFoundException("Item not found: " + item);
+        }
+    }
 }
