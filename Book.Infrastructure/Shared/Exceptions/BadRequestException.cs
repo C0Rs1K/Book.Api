@@ -13,7 +13,7 @@ public class BadRequestException : Exception
 
     public static void ThrowIfNotNull(object? item)
     {
-        if (item == null)
+        if (item != null)
         {
             throw new BadRequestException("Item already exist" + item);
         }
