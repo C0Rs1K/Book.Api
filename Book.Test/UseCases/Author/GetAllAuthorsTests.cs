@@ -2,7 +2,6 @@
 using Book.Application.Dtos.AuthorDtos;
 using Book.Domain.Models;
 using Book.Infrastructure.Repositories.Interfaces;
-using Book.Test.Extentions;
 using Book.UseCases.UseCases.Author.GetAllAuthors;
 using MockQueryable.Moq;
 using Moq;
